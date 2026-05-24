@@ -1,0 +1,28 @@
+# Node / Vite
+node_modules
+dist
+.vite
+*.log
+
+# tsc -b artifacts
+*.tsbuildinfo
+client/vite.config.js
+client/vite.config.d.ts
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Go
+recipes.db
+recipes.db-shm
+recipes.db-wal
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db

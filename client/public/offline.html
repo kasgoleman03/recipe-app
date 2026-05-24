@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#FAF6F0" />
+    <title>You're offline · Warm Kitchen</title>
+    <style>
+      :root {
+        --bg: #FAF6F0;
+        --fg: #2B2522;
+        --muted: #6B6258;
+        --accent: #C75B39;
+        --card: #ffffff;
+        --border: rgba(43, 37, 34, 0.12);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1F1B19;
+          --fg: #F5EFE6;
+          --muted: #BDB1A4;
+          --card: #29231F;
+          --border: rgba(255, 255, 255, 0.1);
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+      }
+      .card {
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 24px rgba(43, 37, 34, 0.06);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(199, 91, 57, 0.12);
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      h1 {
+        font-family: Fraunces, Georgia, serif;
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        margin: 1.25rem 0 0.5rem;
+        letter-spacing: -0.02em;
+      }
+      p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      a.button {
+        display: inline-block;
+        margin-top: 1.25rem;
+        background: var(--accent);
+        color: white;
+        text-decoration: none;
+        padding: 0.7rem 1.25rem;
+        border-radius: 0.6rem;
+        font-weight: 600;
+      }
+      a.button:focus-visible {
+        outline: 2px solid var(--fg);
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card" role="main">
+      <span class="badge">Offline</span>
+      <h1>You're not connected</h1>
+      <p>
+        We couldn't reach the kitchen right now. Your saved collection is available
+        even offline — try opening it from the home screen, or come back when you're
+        connected.
+      </p>
+      <a class="button" href="/collection">Open my collection</a>
+    </main>
+  </body>
+</html>

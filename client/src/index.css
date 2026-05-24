@@ -1,0 +1,159 @@
+/* Warm Kitchen design tokens.
+ *
+ * Colors are written as raw HSL components (no `hsl(...)` wrapper) so the
+ * Tailwind config can compose them with `hsl(var(--foo))` and an alpha
+ * channel via the standard `bg-primary/80` syntax.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* --- Warm Kitchen raw palette (light) --- */
+    --cream: 36 47% 96%;        /* #FAF6F0 page background */
+    --oat: 33 41% 90%;          /* #F0E6D8 raised surfaces */
+    --terracotta: 14 56% 50%;   /* #C75B39 primary accent */
+    --terracotta-fg: 36 47% 98%;
+    --sage: 89 16% 36%;         /* #5C6B4C secondary */
+    --sage-fg: 36 47% 98%;
+    --sage-tint: 86 26% 92%;    /* #EDF0E6 tag pill background */
+    --espresso: 14 11% 15%;     /* #2B2522 primary text */
+
+    /* --- shadcn/ui semantic tokens (light) ---
+     * These are the names the components reference via `bg-background`,
+     * `text-foreground`, etc. They're aliased to the palette above.
+     */
+    --background: var(--cream);
+    --foreground: var(--espresso);
+
+    --card: 0 0% 100%;
+    --card-foreground: var(--espresso);
+
+    --popover: 0 0% 100%;
+    --popover-foreground: var(--espresso);
+
+    --primary: var(--terracotta);
+    --primary-foreground: var(--terracotta-fg);
+
+    --secondary: var(--sage);
+    --secondary-foreground: var(--sage-fg);
+
+    --muted: 33 41% 90%;
+    --muted-foreground: 25 9% 40%;   /* #6B6258 secondary text */
+
+    --accent: var(--sage-tint);
+    --accent-foreground: 89 16% 24%;
+
+    --destructive: 0 65% 48%;
+    --destructive-foreground: 36 47% 98%;
+
+    --border: 33 30% 84%;
+    --input: 33 30% 84%;
+    --ring: var(--terracotta);
+
+    --radius: 0.85rem;
+  }
+
+  .dark {
+    /* --- Warm Kitchen palette (dark mode) ---
+     * Built around a warm dark brown background ("burnt-cocoa") with the
+     * same accent hues, brightened just enough to keep contrast.
+     */
+    --cream: 16 14% 11%;        /* #1F1B19 page background */
+    --oat: 18 12% 16%;          /* deeper warm-brown surface */
+    --terracotta: 14 70% 60%;   /* lifted terracotta for dark BG */
+    --terracotta-fg: 16 14% 11%;
+    --sage: 86 22% 62%;         /* lifted sage */
+    --sage-fg: 16 14% 11%;
+    --sage-tint: 86 14% 22%;
+    --espresso: 36 30% 92%;     /* warm cream as text */
+
+    --background: var(--cream);
+    --foreground: var(--espresso);
+
+    --card: 18 12% 14%;
+    --card-foreground: var(--espresso);
+
+    --popover: 18 12% 14%;
+    --popover-foreground: var(--espresso);
+
+    --primary: var(--terracotta);
+    --primary-foreground: var(--terracotta-fg);
+
+    --secondary: var(--sage);
+    --secondary-foreground: var(--sage-fg);
+
+    --muted: 18 12% 18%;
+    --muted-foreground: 30 12% 70%;
+
+    --accent: var(--sage-tint);
+    --accent-foreground: 86 22% 80%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 18 12% 22%;
+    --input: 18 12% 22%;
+    --ring: var(--terracotta);
+  }
+
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3, h4, h5 {
+    @apply font-display tracking-tight;
+  }
+
+  /* Visible, high-contrast focus outlines for keyboard users. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Skip-link for screen-reader/keyboard users. Visible only when focused. */
+  .skip-link {
+    position: absolute;
+    top: -64px;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    font-weight: 600;
+    transition: top 0.2s ease;
+  }
+  .skip-link:focus {
+    top: 1rem;
+  }
+}
+
+@layer components {
+  /* Subtle ridged background that evokes a kitchen counter without being kitschy. */
+  .warm-grain {
+    background-image:
+      radial-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+}
+
+/* Keep transitions on key interactions, kill them in reduced-motion contexts. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
