@@ -1,0 +1,30 @@
+{
+  "name": "warm-kitchen",
+  "version": "0.1.0",
+  "description": "A complete, deployable, installable Progressive Web App for browsing recipes from [TheMealDB](https://www.themealdb.com/), saving your favorites into a server-owned collection, and following each recipe **hands-free** in a distraction-free cooking mode that holds the screen awake.",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,client -c terracotta,green \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && go run ./cmd/api",
+    "dev:client": "npm --prefix client run dev",
+    "install:client": "npm --prefix client install",
+    "build": "npm --prefix client run build",
+    "preview": "npm --prefix client run preview",
+    "lint": "npm --prefix client run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kasgoleman03/recipe-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kasgoleman03/recipe-app/issues"
+  },
+  "homepage": "https://github.com/kasgoleman03/recipe-app#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

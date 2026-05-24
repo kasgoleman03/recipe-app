@@ -168,6 +168,14 @@ The Vite dev server proxies `/api` → `http://localhost:5174` so the
 `VITE_API_BASE_URL` is optional in development. In production the client is
 served as static files (e.g. on Netlify) and points directly at the Go API.
 
+You can also start both apps from the repo root:
+
+```bash
+npm install
+npm run install:client
+npm run dev
+```
+
 ---
 
 ## Environment variables
@@ -322,24 +330,51 @@ Render's free Go service tier is also fine, but keep in mind its filesystem is
 ephemeral — point `DB_PATH` at a Render Disk (free for small disks) or use
 their free Postgres add-on by swapping the driver.
 
-### Frontend — Netlify or Vercel free tier
+### Frontend — Vercel or Netlify free tier
+
+This repository includes a **root `vercel.json`** that deploys the Vite client
+from `client/`:
+
+- install command: `npm --prefix client install`
+- build command: `npm --prefix client run build`
+- output directory: `client/dist`
+- SPA rewrites to `index.html`
+- service-worker and asset cache headers
+
+Deploy from the repo root:
+
+```bash
+vercel
+# or production
+vercel --prod
+```
+
+Set this Vercel environment variable before deploying:
+
+```text
+VITE_API_BASE_URL=https://<your-go-backend-host>/api
+```
+
+Then make sure the Go server's `CORS_ORIGIN` env var matches your Vercel
+frontend origin, for example:
+
+```text
+CORS_ORIGIN=https://your-project.vercel.app
+```
+
+Important: the current Go backend is **not** deployed by Vercel. It should stay
+on Fly.io, Render, Railway, or another Go-friendly host unless you choose to
+refactor the API into Vercel Functions.
+
+Netlify also works:
 
 ```bash
 cd client
 npm run build
 # Netlify: drop dist/ into a new site, or `netlify deploy --prod --dir=dist`
-# Vercel:  `vercel --prod` from this directory.
 ```
 
-Set:
-- `VITE_API_BASE_URL=https://<your-backend>.fly.dev/api` as a **build-time** env
-  var on the host.
-- A redirect rule so SPA navigation hits `index.html`:
-  - Netlify: `client/_redirects` with `/* /index.html 200`
-  - Vercel: `vercel.json` with a `routes` rule for `/(.*)` → `/index.html`
-
-Then make sure the Go server's `CORS_ORIGIN` env var matches the deployed client
-origin.
+For Netlify, `client/public/_redirects` already provides SPA routing.
 
 ---
 
@@ -362,6 +397,17 @@ origin.
 ---
 
 ## Local dev — copy-paste run instructions
+
+One command from the repo root:
+
+```bash
+npm install
+npm run install:client
+npm run dev
+# → API on http://localhost:5174 and client on http://localhost:5173
+```
+
+Or run the two processes manually:
 
 ```bash
 # Terminal 1 — backend
