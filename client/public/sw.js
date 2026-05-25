@@ -75,13 +75,21 @@ self.addEventListener("activate", (event) => {
 
 // ---- Strategies ----------------------------------------------------------
 
+function isHttpRequest(request) {
+  const protocol = new URL(request.url).protocol;
+  return protocol === "http:" || protocol === "https:";
+}
+
 async function networkFirst(request, cacheName) {
+  if (!isHttpRequest(request)) {
+    return fetch(request);
+  }
   const cache = await caches.open(cacheName);
   const savedCache = await caches.open(SAVED_ASSET_CACHE);
   try {
     const fresh = await fetch(request);
     if (fresh && (fresh.ok || fresh.type === "opaque")) {
-      cache.put(request, fresh.clone());
+      cache.put(request, fresh.clone()).catch(() => undefined);
     }
     return fresh;
   } catch (err) {
@@ -94,13 +102,16 @@ async function networkFirst(request, cacheName) {
 }
 
 async function staleWhileRevalidate(request, cacheName) {
+  if (!isHttpRequest(request)) {
+    return fetch(request);
+  }
   const cache = await caches.open(cacheName);
   const savedCache = await caches.open(SAVED_ASSET_CACHE);
   const cached = (await cache.match(request)) || (await savedCache.match(request));
   const networkPromise = fetch(request)
     .then((resp) => {
       if (resp && (resp.ok || resp.type === "opaque")) {
-        cache.put(request, resp.clone());
+        cache.put(request, resp.clone()).catch(() => undefined);
       }
       return resp;
     })
@@ -125,7 +136,13 @@ async function navigationStrategy(request) {
       (await savedCache.match("/collection")) ||
       (await cache.match("/index.html"));
     if (cached) return cached;
-    return cache.match("/offline.html");
+    return (
+      (await cache.match("/offline.html")) ||
+      new Response(
+        "<!doctype html><title>Offline</title><h1>You're offline</h1><p>Warm Kitchen is unavailable right now.</p>",
+        { status: 503, headers: { "Content-Type": "text/html; charset=utf-8" } },
+      )
+    );
   }
 }
 
@@ -133,6 +150,12 @@ async function navigationStrategy(request) {
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
+  if (!isHttpRequest(request)) {
+    // Browser extensions and other non-http(s) schemes cannot be stored
+    // in Cache Storage. Let the browser handle them outside this SW.
+    return;
+  }
+
   if (request.method !== "GET") {
     // Mutations: pass through, then invalidate dependent caches on success.
     event.respondWith(handleMutation(request));
