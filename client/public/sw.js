@@ -97,7 +97,7 @@ async function networkFirst(request, cacheName) {
     if (cached) return cached;
     const saved = await savedCache.match(request);
     if (saved) return saved;
-    throw err;
+    return new Response("offline", { status: 504 });
   }
 }
 
@@ -116,7 +116,10 @@ async function staleWhileRevalidate(request, cacheName) {
       return resp;
     })
     .catch(() => null);
-  return cached || networkPromise || new Response("offline", { status: 504 });
+  if (cached) return cached;
+
+  const networkResponse = await networkPromise;
+  return networkResponse || new Response("offline", { status: 504 });
 }
 
 async function navigationStrategy(request) {
