@@ -10,10 +10,14 @@ RUN go build -trimpath -ldflags="-s -w" -o /out/api ./cmd/api
 
 # --- runtime ---------------------------------------------------------------
 FROM alpine:3.20
-RUN apk add --no-cache ca-certificates && adduser -D -u 10001 app
+RUN apk add --no-cache ca-certificates \
+    && adduser -D -u 10001 app \
+    && mkdir -p /data \
+    && chown -R app:app /data
 WORKDIR /app
 COPY --from=builder /out/api /app/api
 USER app
 ENV PORT=8080
+ENV DB_PATH=/data/recipes.db
 EXPOSE 8080
 ENTRYPOINT ["/app/api"]

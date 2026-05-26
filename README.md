@@ -326,9 +326,50 @@ fly deploy
 The provided `Dockerfile`-less build works because Fly auto-detects the Go module.
 Add a `Dockerfile` if you prefer reproducible builds.
 
-Render's free Go service tier is also fine, but keep in mind its filesystem is
-ephemeral — point `DB_PATH` at a Render Disk (free for small disks) or use
-their free Postgres add-on by swapping the driver.
+Render's free web service tier is also fine for a portfolio demo, but keep in
+mind its filesystem is ephemeral unless you attach persistent storage. This repo
+includes a root `render.yaml` Blueprint for the Go API.
+
+Render Blueprint path:
+
+```text
+render.yaml
+```
+
+If Render complains about `render.yaml`, you can skip Blueprint mode and create
+the service manually:
+
+```text
+New → Web Service
+Repository: this repo
+Runtime / Language: Docker
+Root Directory: server
+Dockerfile Path: ./Dockerfile
+Docker Context: .
+Health Check Path: /api/health
+```
+
+Set these Render environment variables:
+
+```text
+PORT=8080
+MEALDB_API_BASE=https://www.themealdb.com/api/json/v1
+MEALDB_API_KEY=1
+DB_PATH=/data/recipes.db
+CORS_ORIGIN=https://your-vercel-project.vercel.app
+```
+
+After deploy, test:
+
+```text
+https://your-render-service.onrender.com/api/health
+```
+
+It should return:
+
+```json
+{"status":"ok"}
+```
 
 ### Frontend — Vercel or Netlify free tier
 

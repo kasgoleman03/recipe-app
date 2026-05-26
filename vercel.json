@@ -5,7 +5,7 @@
   "outputDirectory": "client/dist",
   "rewrites": [
     {
-      "source": "/((?!assets/|icon.svg|icon-192.png|icon-512.png|apple-touch-icon.png|manifest.webmanifest|offline.html|sw.js|_redirects).*)",
+      "source": "/((?!api/|assets/|icon.svg|icon-192.png|icon-512.png|apple-touch-icon.png|manifest.webmanifest|offline.html|sw.js|_redirects).*)",
       "destination": "/index.html"
     }
   ],

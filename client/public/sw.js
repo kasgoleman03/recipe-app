@@ -24,7 +24,7 @@
  */
 
 // IMPORTANT: bump this when changing precache contents or cache strategies.
-const CACHE_VERSION = "wk-v2";
+const CACHE_VERSION = "wk-v3";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
@@ -80,6 +80,28 @@ function isHttpRequest(request) {
   return protocol === "http:" || protocol === "https:";
 }
 
+function cacheMissResponse(request) {
+  const url = new URL(request.url);
+  if (url.pathname.startsWith("/api/")) {
+    return new Response(
+      JSON.stringify({
+        error: "offline_cache_miss",
+        message:
+          "The API is unreachable and this response is not cached. Check VITE_API_BASE_URL or reconnect and try again.",
+      }),
+      {
+        status: 503,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      },
+    );
+  }
+
+  return new Response("offline cache miss", {
+    status: 503,
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
+}
+
 async function networkFirst(request, cacheName) {
   if (!isHttpRequest(request)) {
     return fetch(request);
@@ -97,7 +119,7 @@ async function networkFirst(request, cacheName) {
     if (cached) return cached;
     const saved = await savedCache.match(request);
     if (saved) return saved;
-    return new Response("offline", { status: 504 });
+    return cacheMissResponse(request);
   }
 }
 
@@ -119,7 +141,7 @@ async function staleWhileRevalidate(request, cacheName) {
   if (cached) return cached;
 
   const networkResponse = await networkPromise;
-  return networkResponse || new Response("offline", { status: 504 });
+  return networkResponse || cacheMissResponse(request);
 }
 
 async function navigationStrategy(request) {

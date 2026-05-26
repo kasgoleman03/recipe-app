@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: warm-kitchen-api
+    runtime: docker
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: MEALDB_API_BASE
+        value: https://www.themealdb.com/api/json/v1
+      - key: MEALDB_API_KEY
+        sync: false
+      - key: DB_PATH
+        value: /data/recipes.db
+      # After your frontend is deployed, set this to that exact origin,
+      # for example: https://your-project.vercel.app
+      - key: CORS_ORIGIN
+        sync: false
