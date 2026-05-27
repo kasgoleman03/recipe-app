@@ -5,6 +5,10 @@
   "outputDirectory": "client/dist",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://warm-kitchen-api.onrender.com/api/:path*"
+    },
+    {
       "source": "/((?!api/|assets/|icon.svg|icon-192.png|icon-512.png|apple-touch-icon.png|manifest.webmanifest|offline.html|sw.js|_redirects).*)",
       "destination": "/index.html"
     }
